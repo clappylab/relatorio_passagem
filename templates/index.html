@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Despesas de Passagens - Sistema de Gestão</title>
+    <style>
+        /* CSS RESET & BOX SIZING */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        /* ESTILOS GERAIS DA APLICAÇÃO WEB */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 12px;
+            color: #1e293b;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: #0f172a;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        h3 {
+            color: #334155;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .card-header-title {
+            background-color: #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .form-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background-color: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .radio-option {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #334155;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .radio-option input[type="radio"] {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: #2563eb;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-add {
+            background-color: #10b981;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .btn-add:hover { background-color: #059669; }
+
+        .btn-print {
+            background-color: #2563eb;
+            color: white;
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 14px;
+        }
+
+        .btn-print:hover { background-color: #1d4ed8; }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            width: auto;
+        }
+
+        .btn-delete:hover { background-color: #dc2626; }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        table.data-table th, table.data-table td {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        table.data-table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        @media (min-width: 640px) {
+            body {
+                padding: 24px;
+            }
+
+            .container {
+                padding: 30px;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+                text-align: left;
+            }
+
+            .form-row {
+                flex-direction: row;
+                gap: 15px;
+            }
+
+            .btn-add {
+                width: auto;
+                align-self: flex-end;
+            }
+
+            .btn-print {
+                font-size: 16px;
+            }
+        }
+
+        /* CONFIGURAÇÕES EXCLUSIVAS PARA IMPRESSÃO A4 */
+        #print-area {
+            display: none;
+        }
+
+        @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 100%;
+                overflow: hidden;
+                background: #fff;
+            }
+
+            body * {
+                visibility: hidden;
+            }
+
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+
+            #print-area {
+                display: flex !important;
+                flex-direction: column;
+                justify-content: flex-start;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: Arial, sans-serif;
+                color: #000;
+            }
+
+            .print-section {
+                box-sizing: border-box;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* Quando há 2 relatórios na mesma página */
+            .print-section.dual {
+                height: 48.5%;
+                margin-bottom: 3%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                border-bottom: 1px dashed #cbd5e1;
+                padding-bottom: 15px;
+            }
+
+            .print-section.dual:last-child {
+                margin-bottom: 0;
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+            /* Quando há 1 único relatório na página */
+            .print-section.single {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .sheet-title {
+                text-align: center;
+                font-weight: bold;
+                font-size: 15px;
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+                border-bottom: 1.5px solid #000;
+                padding-bottom: 4px;
+            }
+
+            .sheet-header {
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+
+            .table-container {
+                flex-grow: 1;
+            }
+
+            .report-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 6px;
+                table-layout: fixed;
+            }
+
+            .report-table th, .report-table td {
+                border: 1px solid #000;
+                padding: 3px 6px;
+                text-align: left;
+                font-size: 11px;
+                height: 22px;
+                vertical-align: middle;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .report-table th {
+                text-transform: uppercase;
+                background-color: #f2f2f2;
+                font-size: 11px;
+            }
+
+            .sheet-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: bold;
+                font-size: 11px;
+                margin-top: auto;
+                padding-top: 6px;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm 12mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Despesas de Passagens</h2>
+
+        <!-- Dados do Funcionario e Data -->
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="funcionario">Funcionário:</label>
+                    <input type="text" id="funcionario" placeholder="Nome completo do funcionário">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="data_despesa">Data:</label>
+                    <input type="date" id="data_despesa">
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulário de inserção dos itens -->
+        <div class="form-section">
+            <h3>Adicionar Passagem</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="linha">Linha:</label>
+                    <input type="text" id="linha" placeholder="Ex: 483, Trem, Metrô">
+                </div>
+                <div class="form-group">
+                    <label for="destino">Destino:</label>
+                    <input type="text" id="destino" placeholder="Ex: Centro">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="endereco">Endereço:</label>
+                    <input type="text" id="endereco" placeholder="Rua / Avenida e número">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="valor">Valor (R$):</label>
+                    <input type="number" id="valor" step="0.01" placeholder="0,00">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>Cartão:</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="cartao" value="JAE" checked> JAE
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="cartao" value="RIOCARD"> RIOCARD
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-add" onclick="adicionarItem()">+ Adicionar à Lista</button>
+            </div>
+        </div>
+
+        <!-- Lista de Itens Separada por Cartões -->
+        <h3>Itens Incluídos</h3>
+        <div id="container-tabelas">
+            <!-- Tabela JAE -->
+            <div id="bloco-jae-web" style="display: none;">
+                <div class="card-header-title">Cartão JAE</div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Linha</th>
+                                <th>Destino</th>
+                                <th>Endereço</th>
+                                <th>Valor (R$)</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela-jae"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabela RIOCARD -->
+            <div id="bloco-riocard-web" style="display: none;">
+                <div class="card-header-title">Cartão RIOCARD</div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Linha</th>
+                                <th>Destino</th>
+                                <th>Endereço</th>
+                                <th>Valor (R$)</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela-riocard"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="mensagem-vazia" style="text-align: center; color: #94a3b8; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                Nenhum item adicionado ainda.
+            </div>
+        </div>
+
+        <button class="btn btn-print" onclick="gerarEImprimir()">Gerar e Imprimir Relatório</button>
+    </div>
+
+    <!-- Área de impressão formatada em 1 folha A4 -->
+    <div id="print-area">
+        <!-- Renderizado dinamicamente pelo JS -->
+    </div>
+
+    <script>
+        let listaItens = [];
+
+        function adicionarItem() {
+            const linha = document.getElementById('linha').value.trim();
+            const destino = document.getElementById('destino').value.trim();
+            const endereco = document.getElementById('endereco').value.trim();
+            const valor = parseFloat(document.getElementById('valor').value);
+            const cartao = document.querySelector('input[name="cartao"]:checked').value;
+
+            // Validação de limite por cartão (máximo 12 linhas)
+            const itensDoCartao = listaItens.filter(i => i.cartao === cartao);
+            if (itensDoCartao.length >= 12) {
+                alert(`O cartão ${cartao} já atingiu o limite máximo de 12 itens por relatório.`);
+                return;
+            }
+
+            if (!linha || !destino || !endereco || isNaN(valor)) {
+                alert('Por favor, preencha todos os campos do item corretamente.');
+                return;
+            }
+
+            const novoItem = {
+                id: Date.now(),
+                linha,
+                destino,
+                endereco,
+                cartao,
+                valor: valor
+            };
+
+            listaItens.push(novoItem);
+            atualizarTabelaVisual();
+            limparFormularioItem();
+        }
+
+        function removerItem(id) {
+            listaItens = listaItens.filter(item => item.id !== id);
+            atualizarTabelaVisual();
+        }
+
+        function limparFormularioItem() {
+            document.getElementById('linha').value = '';
+            document.getElementById('destino').value = '';
+            document.getElementById('endereco').value = '';
+            document.getElementById('valor').value = '';
+        }
+
+        function atualizarTabelaVisual() {
+            const blocoJae = document.getElementById('bloco-jae-web');
+            const blocoRiocard = document.getElementById('bloco-riocard-web');
+            const tbodyJae = document.getElementById('corpo-tabela-jae');
+            const tbodyRiocard = document.getElementById('corpo-tabela-riocard');
+            const msgVazia = document.getElementById('mensagem-vazia');
+
+            tbodyJae.innerHTML = '';
+            tbodyRiocard.innerHTML = '';
+
+            const itensJae = listaItens.filter(i => i.cartao === 'JAE');
+            const itensRiocard = listaItens.filter(i => i.cartao === 'RIOCARD');
+
+            if (listaItens.length === 0) {
+                msgVazia.style.display = 'block';
+                blocoJae.style.display = 'none';
+                blocoRiocard.style.display = 'none';
+                return;
+            }
+
+            msgVazia.style.display = 'none';
+
+            if (itensJae.length > 0) {
+                blocoJae.style.display = 'block';
+                itensJae.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.linha}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.endereco}</td>
+                        <td>R$ ${item.valor.toFixed(2).replace('.', ',')}</td>
+                        <td><button class="btn btn-delete" onclick="removerItem(${item.id})">Excluir</button></td>
+                    `;
+                    tbodyJae.appendChild(tr);
+                });
+            } else {
+                blocoJae.style.display = 'none';
+            }
+
+            if (itensRiocard.length > 0) {
+                blocoRiocard.style.display = 'block';
+                itensRiocard.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.linha}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.endereco}</td>
+                        <td>R$ ${item.valor.toFixed(2).replace('.', ',')}</td>
+                        <td><button class="btn btn-delete" onclick="removerItem(${item.id})">Excluir</button></td>
+                    `;
+                    tbodyRiocard.appendChild(tr);
+                });
+            } else {
+                blocoRiocard.style.display = 'none';
+            }
+        }
+
+        function formatarDataBR(dataISO) {
+            if (!dataISO) return '__________';
+            const partes = dataISO.split('-');
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        function criarBlocoRelatorio(tituloCartao, itens, funcionario, dataFormatada, isDual) {
+            const total = itens.reduce((acc, curr) => acc + curr.valor, 0);
+            const totalFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
+
+            const sectionClass = isDual ? 'print-section dual' : 'print-section single';
+
+            let html = `
+                <div class="${sectionClass}">
+                    <div>
+                        <div class="sheet-title">DESPESAS DE PASSAGENS</div>
+                        
+                        <div class="sheet-header">
+                            <div>FUNCIONÁRIO: <span>${funcionario.toUpperCase()}</span></div>
+                            <div>DATA: <span>${dataFormatada}</span></div>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="report-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 18%;">LINHA</th>
+                                        <th style="width: 32%;">DESTINO</th>
+                                        <th style="width: 35%;">ENDEREÇO</th>
+                                        <th style="width: 15%;">VALOR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            `;
+
+            // Adiciona as linhas preenchidas
+            itens.forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.linha}</td>
+                        <td>${item.destino}</td>
+                        <td>${item.endereco}</td>
+                        <td>R$ ${item.valor.toFixed(2).replace('.', ',')}</td>
+                    </tr>
+                `;
+            });
+
+            // Completa exatamente até 12 linhas no total da tabela
+            const totalLinhasAlvo = 12;
+            const linhasExtras = totalLinhasAlvo - itens.length;
+            for (let i = 0; i < linhasExtras; i++) {
+                html += `
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                `;
+            }
+
+            html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="sheet-footer">
+                        <div>ASSINATURA: _____________________</div>
+                        <div>VISTO: _____________</div>
+                        <div>TOTAL: ${totalFormatado}</div>
+                    </div>
+                </div>
+            `;
+
+            return html;
+        }
+
+        function gerarEImprimir() {
+            const funcionario = document.getElementById('funcionario').value.trim();
+            const dataInput = document.getElementById('data_despesa').value;
+
+            if (!funcionario) {
+                alert('Por favor, informe o nome do funcionário.');
+                return;
+            }
+
+            if (listaItens.length === 0) {
+                alert('Adicione ao menos uma passagem antes de imprimir.');
+                return;
+            }
+
+            const dataFormatada = formatarDataBR(dataInput);
+            const itensJae = listaItens.filter(i => i.cartao === 'JAE');
+            const itensRiocard = listaItens.filter(i => i.cartao === 'RIOCARD');
+
+            const isDual = itensJae.length > 0 && itensRiocard.length > 0;
+
+            const printArea = document.getElementById('print-area');
+            printArea.innerHTML = '';
+
+            // Se existirem itens JAE
+            if (itensJae.length > 0) {
+                printArea.innerHTML += criarBlocoRelatorio('JAE', itensJae, funcionario, dataFormatada, isDual);
+            }
+
+            // Se existirem itens RIOCARD
+            if (itensRiocard.length > 0) {
+                printArea.innerHTML += criarBlocoRelatorio('RIOCARD', itensRiocard, funcionario, dataFormatada, isDual);
+            }
+
+            // Dispara impressão nativa
+            window.print();
+        }
+
+        // Inicializa estado da tabela no carregamento
+        atualizarTabelaVisual();
+    </script>
+</body>
+</html>
