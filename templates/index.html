@@ -266,7 +266,7 @@
             #print-area {
                 display: flex !important;
                 flex-direction: column;
-                justify-content: space-between;
+                justify-content: flex-start; /* Fixado no topo */
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -278,14 +278,11 @@
                 color: #000;
             }
 
+            /* Mantém a altura fixa de metade da folha A4 em qualquer situação */
             .print-section {
                 box-sizing: border-box;
                 page-break-inside: avoid;
                 break-inside: avoid;
-            }
-
-            /* Quando há 2 relatórios na mesma página */
-            .print-section.dual {
                 height: 47%;
                 display: flex;
                 flex-direction: column;
@@ -320,14 +317,6 @@
                 z-index: 2;
                 font-size: 14px;
                 color: #334155;
-            }
-
-            /* Quando há 1 único relatório na página */
-            .print-section.single {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
             }
 
             .sheet-title {
@@ -620,16 +609,14 @@
             return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        function criarBlocoRelatorio(tituloCartao, itens, funcionario, dataFormatada, isDual) {
+        function criarBlocoRelatorio(tituloCartao, itens, funcionario, dataFormatada) {
             const total = itens.reduce((acc, curr) => acc + curr.valor, 0);
             const totalFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
 
-            const sectionClass = isDual ? 'print-section dual' : 'print-section single';
-
             let html = `
-                <div class="${sectionClass}">
+                <div class="print-section">
                     <div>
-                        <div class="sheet-title">DESPESAS DE PASSAGENS</div>
+                        <div class="sheet-title">DESPESAS DE PASSAGENS (${tituloCartao})</div>
                         
                         <div class="sheet-header">
                             <div>FUNCIONÁRIO: <span>${funcionario.toUpperCase()}</span></div>
@@ -710,19 +697,17 @@
             const itensJae = listaItens.filter(i => i.cartao === 'JAE');
             const itensRiocard = listaItens.filter(i => i.cartao === 'RIOCARD');
 
-            const isDual = itensJae.length > 0 && itensRiocard.length > 0;
-
             const printArea = document.getElementById('print-area');
             printArea.innerHTML = '';
 
-            if (isDual) {
-                printArea.innerHTML += criarBlocoRelatorio('JAE', itensJae, funcionario, dataFormatada, true);
+            if (itensJae.length > 0 && itensRiocard.length > 0) {
+                printArea.innerHTML += criarBlocoRelatorio('JAE', itensJae, funcionario, dataFormatada);
                 printArea.innerHTML += `<div class="cut-line"><span>✂</span></div>`;
-                printArea.innerHTML += criarBlocoRelatorio('RIOCARD', itensRiocard, funcionario, dataFormatada, true);
+                printArea.innerHTML += criarBlocoRelatorio('RIOCARD', itensRiocard, funcionario, dataFormatada);
             } else if (itensJae.length > 0) {
-                printArea.innerHTML += criarBlocoRelatorio('JAE', itensJae, funcionario, dataFormatada, false);
+                printArea.innerHTML += criarBlocoRelatorio('JAE', itensJae, funcionario, dataFormatada);
             } else if (itensRiocard.length > 0) {
-                printArea.innerHTML += criarBlocoRelatorio('RIOCARD', itensRiocard, funcionario, dataFormatada, false);
+                printArea.innerHTML += criarBlocoRelatorio('RIOCARD', itensRiocard, funcionario, dataFormatada);
             }
 
             // Dispara impressão nativa
