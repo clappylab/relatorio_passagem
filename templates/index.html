@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Despesas de Passagens - Sistema de Gestão</title>
+    <link rel="manifest" href="/manifest.json">
     <style>
         /* CSS RESET & BOX SIZING */
         *, *::before, *::after {
@@ -715,7 +716,17 @@
         }
 
         // Inicializa estado da tabela no carregamento
-        atualizarTabelaVisual();
+        atualizarTabelaVisual();        
+    </script>
+        <!-- Adicionar antes de fechar o </body> -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker registrado!', reg))
+            .catch(err => console.error('Erro ao registrar Service Worker:', err));
+        });
+    }
     </script>
 </body>
 </html>

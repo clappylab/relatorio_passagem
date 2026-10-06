@@ -1,0 +1,16 @@
+{
+  "short_name": "Passagens",
+  "name": "Despesas de Passagens - Gestão",
+  "icons": [
+    {
+      "src": "https://play-lh.googleusercontent.com/ARqiSMLL40yvCT8FrsTmgxcjr_h0_M5Wl0x7CwV2dgZvXel3378g1pH3WuSXWFC3XM6ouQzcX73iYFnbmKWGUcQ=w240-h480-rw",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#f1f5f9",
+  "theme_color": "#2563eb",
+  "display": "standalone"
+}
